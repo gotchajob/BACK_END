@@ -9,5 +9,5 @@ import lombok.*;
 @ToString
 public class AuthenticationResponse {
     private String token;
-    private String role_id;
+    private UserResponse user;
 }

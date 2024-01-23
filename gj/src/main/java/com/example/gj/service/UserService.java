@@ -4,18 +4,17 @@ import com.example.gj.config.response.Message;
 import com.example.gj.model.User;
 import com.example.gj.repository.UserRepository;
 import com.example.gj.util.JwtUtil;
-import com.example.gj.util.Util;
 import com.example.gj.validator.EmailValidator;
 import com.example.gj.validator.PasswordValidator;
 import com.example.gj.viewmodel.user.AuthenticationResponse;
 import com.example.gj.viewmodel.user.UserCreate;
 import com.example.gj.viewmodel.user.UserLogin;
+import com.example.gj.viewmodel.user.UserResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -42,6 +41,7 @@ public class UserService {
     BCryptPasswordEncoder bCryptPasswordEncoder;
 
 
+
     public List<User> get() {
         return userRepository.findAll();
     }
@@ -53,10 +53,10 @@ public class UserService {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(userLogin.getEmail(), userLogin.getPassword()));
 
-        UserDetails userDetails = userDetailsService.loadUserByUsername(userLogin.getEmail());
-        String token = jwt.generateToken(userDetails.getUsername());
-        String roleId = extractRoleId(userDetails.getAuthorities());
-        return new AuthenticationResponse(token, roleId);
+        User user = userRepository.findByEmail(userLogin.getEmail());
+
+        String token = jwt.generateToken(user.getEmail());
+        return new AuthenticationResponse(token, new UserResponse(user));
     }
     public String extractRoleId(Collection<? extends GrantedAuthority> authorities) {
         for (GrantedAuthority authority : authorities) {
@@ -91,7 +91,7 @@ public class UserService {
         user.setLastName(userCreate.getLastName());
 
         user.setRoleId(2);
-        user.setStatus(1);
+        user.setStatus(2);
         user.setCreatedAt(new Date());
 
         return userRepository.save(user);
@@ -110,7 +110,7 @@ public class UserService {
             return Message.PASSWORD_SHORT;
         }
 
-        if (PasswordValidator.isValidatePassword(userCreate.getPassword())) {
+        if (!PasswordValidator.isValidPassword(userCreate.getPassword())) {
             return Message.INVALID_PASSWORD;
         }
 

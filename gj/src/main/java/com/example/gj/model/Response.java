@@ -20,12 +20,12 @@ public class Response<T> {
     }
 
     public static <T> ResponseEntity<Response<T>> error(Exception e) {
-        Response<T> error = new Response<>(Status.INTERNAL_ERROR.name(), "Error: " + e.getMessage(), null);
+        Response<T> error = new Response<>(Status.ERROR.name().toLowerCase(), e.getMessage(), null);
         return ResponseEntity.internalServerError().body(error);
     }
 
     public static <T> ResponseEntity<Response<T>> success(T data) {
-        Response<T> response = new Response<>(Status.SUCCESS.name(), "Success", data);
+        Response<T> response = new Response<>(Status.SUCCESS.name().toLowerCase(), "success", data);
         return ResponseEntity.ok(response);
     }
 }

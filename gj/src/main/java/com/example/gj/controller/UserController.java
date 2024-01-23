@@ -3,9 +3,8 @@ package com.example.gj.controller;
 import com.example.gj.model.Response;
 import com.example.gj.model.User;
 import com.example.gj.service.UserService;
-import com.example.gj.viewmodel.user.AuthenticationResponse;
-import com.example.gj.viewmodel.user.UserCreate;
-import com.example.gj.viewmodel.user.UserLogin;
+import com.example.gj.service.VerifyService;
+import com.example.gj.viewmodel.user.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +17,11 @@ public class UserController {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    VerifyService verifyService;
+
+
     @GetMapping("/")
     public ResponseEntity<Response<List<User>>> get() {
         try {
@@ -53,4 +57,60 @@ public class UserController {
             return Response.error(e);
         }
     }
+
+    @PostMapping("/create-verify-email")
+    public ResponseEntity<Response<String>> createVerifyEmail(@RequestBody CreateVerifyRequest request) {
+        try {
+            boolean isSuccess = verifyService.createEmailVerify(request.getEmail());
+            if (!isSuccess) {
+                throw new Exception("Verify Fail!");
+            }
+            return Response.success(null);
+        } catch (Exception e) {
+            return Response.error(e);
+        }
+    }
+
+    @PostMapping("/verify-email")
+    public ResponseEntity<Response<VerifyResponse>> verify(@RequestBody VerifyEmailRequest request) {
+        try {
+            VerifyResponse response = verifyService.verifyEmail(request.getEmail(), request.getCode());
+            return Response.success(response);
+        } catch (Exception e) {
+            return Response.error(e);
+        }
+    }
+
+    @PostMapping("/create-forget-password")
+    public ResponseEntity<Response<VerifyResponse>> createVerifyPassword(@RequestBody CreateForgetPasswordRequest request) {
+        try {
+            verifyService.createForgetPassword(request.getEmail());
+
+            return Response.success(null);
+        } catch (Exception e) {
+            return Response.error(e);
+        }
+    }
+
+    @PostMapping("/check-code-forget-password")
+    public ResponseEntity<Response<VerifyResponse>> checkCodePassword(@RequestBody CheckCodeForgetPasswordRequest request) {
+        try {
+            verifyService.checkCodeForgetPassword(request.getEmail(), request.getCode());
+
+            return Response.success(null);
+        } catch (Exception e) {
+            return Response.error(e);
+        }
+    }
+    @PostMapping("/verify-forget-password")
+    public ResponseEntity<Response<VerifyResponse>> verifyForgetPassword(@RequestBody VerifyForgetPasswordRequest request) {
+        try {
+            verifyService.verifyPassword(request);
+
+            return Response.success(null);
+        } catch (Exception e) {
+            return Response.error(e);
+        }
+    }
+
 }

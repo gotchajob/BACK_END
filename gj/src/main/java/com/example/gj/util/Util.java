@@ -5,6 +5,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Random;
 
 public class Util {
     public static String date() {
@@ -24,5 +25,22 @@ public class Util {
     public static Date expipyDate(int expiryTimeInMinute) {
         return new Date(System.currentTimeMillis() + (1000L *60*expiryTimeInMinute));
     }
+
+    public static String generateRandomNumberString(int length) {
+        if (length <= 0) {
+            throw new IllegalArgumentException("Length must be greater than 0");
+        }
+
+        Random random = new Random();
+        StringBuilder stringBuilder = new StringBuilder();
+
+        for (int i = 0; i < length; i++) {
+            int randomNumber = random.nextInt(10);
+            stringBuilder.append(randomNumber);
+        }
+
+        return stringBuilder.toString();
+    }
+
 
 }
