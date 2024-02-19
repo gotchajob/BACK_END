@@ -4,9 +4,11 @@ import com.example.gj.model.Response;
 import com.example.gj.model.User;
 import com.example.gj.service.UserService;
 import com.example.gj.service.VerifyService;
+import com.example.gj.util.Role;
 import com.example.gj.viewmodel.user.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,6 +25,7 @@ public class UserController {
 
 
     @GetMapping("/")
+    @Secured(Role.ADMIN)
     public ResponseEntity<Response<List<User>>> get() {
         try {
             List<User> userList = userService.get();
@@ -30,6 +33,16 @@ public class UserController {
                 throw new Exception("Not found");
             }
             return Response.success(userList);
+        } catch (Exception e) {
+            return Response.error(e);
+        }
+    }
+    @GetMapping("/current")
+    @Secured({Role.USER, Role.ADMIN})
+    public ResponseEntity<Response<UserResponse>> getCurrentUser() {
+        try {
+            UserResponse user = userService.getCurrentUser();
+            return Response.success(user);
         } catch (Exception e) {
             return Response.error(e);
         }
@@ -82,7 +95,7 @@ public class UserController {
     }
 
     @PostMapping("/create-forget-password")
-    public ResponseEntity<Response<VerifyResponse>> createVerifyPassword(@RequestBody CreateForgetPasswordRequest request) {
+    public ResponseEntity<Response<String>> createVerifyPassword(@RequestBody CreateForgetPasswordRequest request) {
         try {
             verifyService.createForgetPassword(request.getEmail());
 
@@ -93,7 +106,7 @@ public class UserController {
     }
 
     @PostMapping("/check-code-forget-password")
-    public ResponseEntity<Response<VerifyResponse>> checkCodePassword(@RequestBody CheckCodeForgetPasswordRequest request) {
+    public ResponseEntity<Response<String>> checkCodePassword(@RequestBody CheckCodeForgetPasswordRequest request) {
         try {
             verifyService.checkCodeForgetPassword(request.getEmail(), request.getCode());
 
@@ -103,9 +116,33 @@ public class UserController {
         }
     }
     @PostMapping("/verify-forget-password")
-    public ResponseEntity<Response<VerifyResponse>> verifyForgetPassword(@RequestBody VerifyForgetPasswordRequest request) {
+    public ResponseEntity<Response<String>> verifyForgetPassword(@RequestBody VerifyForgetPasswordRequest request) {
         try {
             verifyService.verifyPassword(request);
+
+            return Response.success(null);
+        } catch (Exception e) {
+            return Response.error(e);
+        }
+    }
+
+    @PostMapping("/change-password")
+    @Secured({Role.USER, Role.ADMIN})
+    public ResponseEntity<Response<String>> changePassword(@RequestBody ChangePasswordRequest request) {
+        try {
+
+
+            return Response.success(null);
+        } catch (Exception e) {
+            return Response.error(e);
+        }
+    }
+
+    @PostMapping("/update-profile")
+    @Secured(Role.USER)
+    public ResponseEntity<Response<String>> updateProfile(@RequestBody ChangePasswordRequest request) {
+        try {
+
 
             return Response.success(null);
         } catch (Exception e) {

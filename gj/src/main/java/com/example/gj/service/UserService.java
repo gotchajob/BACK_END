@@ -13,8 +13,10 @@ import com.example.gj.viewmodel.user.UserResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -116,5 +118,31 @@ public class UserService {
 
 
         return null;
+    }
+
+    public UserResponse getCurrentUser() throws Exception {
+      String email = getCurrentUsername();
+      if (email == null) {
+          throw new Exception(Message.NO_AUTH);
+      }
+
+      User user = userRepository.findByEmail(email);
+      if (user == null || user.getStatus() == 0) {
+          throw new Exception(Message.USER_NOT_FOUND);
+      }
+
+      return new UserResponse(user);
+    };
+
+
+
+    private String getCurrentUsername() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return null;
+        }
+
+        return authentication.getName();
     }
 }

@@ -21,7 +21,7 @@ public class Response<T> {
 
     public static <T> ResponseEntity<Response<T>> error(Exception e) {
         Response<T> error = new Response<>(Status.ERROR.name().toLowerCase(), e.getMessage(), null);
-        return ResponseEntity.internalServerError().body(error);
+        return ResponseEntity.badRequest().body(error);
     }
 
     public static <T> ResponseEntity<Response<T>> success(T data) {

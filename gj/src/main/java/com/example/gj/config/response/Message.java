@@ -1,7 +1,10 @@
 package com.example.gj.config.response;
 
 public class Message {
+
     public static final String INVALID_EMAIL = "Invalid Email.";
+    public static final String NOT_FOUND = "not found";
+    public static final String NO_AUTH = "No authenticated user";
     public static final String VERIFY_FAIL = "verify fail";
     public static final String CREATE_VERIFY_FAIL = "create verify fail";
     public static final String CODE_LENGTH = "Invalid code length";

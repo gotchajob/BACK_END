@@ -1,11 +1,17 @@
 package com.example.gj.service;
 
+import com.example.gj.viewmodel.answer.CreateAnswerRequest;
+import com.example.gj.viewmodel.advise.AdviseRequest;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class EmailService {
+    //final static String ADMIN_EMAIL = "gotchajob.vn@gmail.com";
+    final static String ADMIN_EMAIL = "vchi1201@gmail.com";
     private final JavaMailSender mailSender;
     public EmailService(JavaMailSender mailSender) {
         this.mailSender = mailSender;
@@ -55,4 +61,47 @@ public class EmailService {
 
         sendEmail(email, subject, body);
     }
+
+    public void sendMailOrderService(String customerName, String customerPhone, String customerEmail) {
+        String subject = "Customer order service";
+        String body = "information of Customer:\n" +
+                "fullName: " + customerName + "\n" +
+                "phone: " + customerPhone + "\n" +
+                "email: " + customerEmail + "\n";
+
+        sendEmail(ADMIN_EMAIL, subject, body);
+    }
+
+    public void sendMailSubscribeNews(String customerEmail) {
+        String subject = "Customer Subscribe News";
+        String body = "information of Customer:\n" +
+                "email: " + customerEmail + "\n";
+
+        sendEmail(ADMIN_EMAIL, subject, body);
+    }
+
+    public void sendMailAdvise(AdviseRequest adviseRequest) {
+        String subject = "Consulting service for customer";
+        String body = "information of Customer:\n" +
+                "fullName: " + adviseRequest.getFullName() + "\n" +
+                "phone: " + adviseRequest.getPhone() + "\n" +
+                "email: " + adviseRequest.getEmail() + "\n" +
+                "advise: " + adviseRequest.getAdvise();
+
+        sendEmail(ADMIN_EMAIL, subject, body);
+    }
+
+    public void sendMailAnswerQuestion(List<CreateAnswerRequest> list, String customerName) {
+        String subject = "Answer question of customer";
+        String body = "Customer Name: " + customerName + "\n\n";
+
+        for (CreateAnswerRequest c : list) {
+            body += "ID Question: " + c.getQuestionId() + "\n";
+            body += "Answer: " + c.getAnswer() + "\n\n";
+        }
+
+        sendEmail(ADMIN_EMAIL, subject, body);
+    }
+
+
 }
