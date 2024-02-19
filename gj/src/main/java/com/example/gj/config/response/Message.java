@@ -3,6 +3,7 @@ package com.example.gj.config.response;
 public class Message {
 
     public static final String INVALID_EMAIL = "Invalid Email.";
+    public static final String INVALID_INPUT = "Input is invalid";
     public static final String NOT_FOUND = "not found";
     public static final String NO_AUTH = "No authenticated user";
     public static final String VERIFY_FAIL = "verify fail";

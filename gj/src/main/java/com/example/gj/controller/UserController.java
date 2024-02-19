@@ -24,14 +24,15 @@ public class UserController {
     VerifyService verifyService;
 
 
-    @GetMapping("/")
+    @GetMapping("")
     @Secured(Role.ADMIN)
-    public ResponseEntity<Response<List<User>>> get() {
+    public ResponseEntity<Response<GetUserResponse>> get(@RequestParam(defaultValue = "1") int page,
+                                                         @RequestParam(defaultValue = "5") int limit,
+                                                         @RequestParam(defaultValue = "createdAt",required = false) String sortBy,
+                                                         @RequestParam(defaultValue = "asc",required = false) String sortOrder) {
         try {
-            List<User> userList = userService.get();
-            if (userList == null || userList.isEmpty()) {
-                throw new Exception("Not found");
-            }
+            GetUserResponse userList = userService.get(page, limit, sortBy, sortOrder);
+
             return Response.success(userList);
         } catch (Exception e) {
             return Response.error(e);
@@ -145,6 +146,30 @@ public class UserController {
 
 
             return Response.success(null);
+        } catch (Exception e) {
+            return Response.error(e);
+        }
+    }
+
+    @PostMapping("/ban-user")
+    @Secured(Role.ADMIN)
+    public ResponseEntity<Response<String>> banUser(@RequestBody BanUserRequest request) {
+        try {
+            userService.banUser(request.getUserIdList());
+
+            return Response.success(null);
+        } catch (Exception e) {
+            return Response.error(e);
+        }
+    }
+
+    @GetMapping("/get-a-user")
+    @Secured(Role.ADMIN)
+    public ResponseEntity<Response<User>> getUser(@RequestParam String id) {
+        try {
+            User user = userService.getAUser(id);
+
+            return Response.success(user);
         } catch (Exception e) {
             return Response.error(e);
         }

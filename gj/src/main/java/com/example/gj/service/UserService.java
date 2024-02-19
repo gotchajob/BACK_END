@@ -6,11 +6,11 @@ import com.example.gj.repository.UserRepository;
 import com.example.gj.util.JwtUtil;
 import com.example.gj.validator.EmailValidator;
 import com.example.gj.validator.PasswordValidator;
-import com.example.gj.viewmodel.user.AuthenticationResponse;
-import com.example.gj.viewmodel.user.UserCreate;
-import com.example.gj.viewmodel.user.UserLogin;
-import com.example.gj.viewmodel.user.UserResponse;
+import com.example.gj.viewmodel.user.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -21,13 +21,13 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class UserService {
+
+    private final static int BAN_USER_STATUS = 0;
+    private final static int USER_ROLE = 2;
 
     @Autowired
     UserRepository userRepository;
@@ -44,8 +44,17 @@ public class UserService {
 
 
 
-    public List<User> get() {
-        return userRepository.findAll();
+    public GetUserResponse get(int page, int limit, String sortBy, String sortOrder) {
+        Sort.Direction direction = sortOrder.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
+        Pageable pageRequest = PageRequest.of(page - 1, limit, direction, sortBy);
+
+        List<User> userList = userRepository.findAllByRoleId(USER_ROLE, pageRequest);
+        if (userList == null) {
+            userList = new ArrayList<>();
+        }
+        int total = userRepository.countByRoleId(USER_ROLE);
+
+        return new GetUserResponse(userList, total);
     }
 
     public AuthenticationResponse login(UserLogin userLogin) throws Exception{
@@ -136,7 +145,7 @@ public class UserService {
 
 
 
-    private String getCurrentUsername() {
+    public String getCurrentUsername() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication == null || !authentication.isAuthenticated()) {
@@ -145,4 +154,41 @@ public class UserService {
 
         return authentication.getName();
     }
+
+    public boolean banUser(List<String> userIdList) throws Exception {
+        if (userIdList == null) {
+            throw new Exception(Message.NULL_INPUT);
+        }
+
+        try {
+            for (String id : userIdList) {
+                Optional<User> optionalUser = userRepository.findById(id);
+                User user = optionalUser.isEmpty() ? null : optionalUser.get();
+
+                if (user != null && user.getStatus() != BAN_USER_STATUS && user.getRoleId() != 1) {
+                    user.setStatus(BAN_USER_STATUS);
+                    userRepository.save(user);
+                }
+            }
+        } catch (Exception e) {
+            throw new Exception("Error when ban user");
+        }
+
+        return true;
+    }
+
+    public User getAUser(String id) throws Exception {
+        if (id == null) {
+            throw new Exception(Message.NULL_INPUT);
+        }
+
+        Optional<User> user = userRepository.findById(id);
+        if (user.isEmpty()) {
+            throw new Exception(Message.USER_NOT_FOUND);
+        }
+
+        return user.get();
+    }
+
+
 }

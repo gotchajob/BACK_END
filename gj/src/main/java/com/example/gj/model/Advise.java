@@ -22,6 +22,7 @@ public class Advise {
     private int status;
     private Date createdAt;
     private Date updatedAt;
+    private String processingBy;
 
     public Advise(String fullName, String phone, String mail, String advise) {
         this.id = UUID.randomUUID().toString();
