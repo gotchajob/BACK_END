@@ -41,7 +41,7 @@ public class AdviseService {
 
     public GetAdviseResponse getAdvise(int page, int limit, String sortBy, String sortOrder) {
 
-        List<Integer> statusList = Arrays.asList(1,2);
+        List<Integer> statusList = Arrays.asList(1,2,3);
         Sort.Direction direction = sortOrder.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
         Pageable pageable = PageRequest.of(page - 1, limit, direction, sortBy);
 
