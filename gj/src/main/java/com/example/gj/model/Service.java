@@ -18,9 +18,9 @@ public class Service {
     private String title;
     private String logo;
     private String description;
-    private String timeUsed;
-    private String costLowest;
-    private String costHighest;
+    private int timeUsed;
+    private int costLowest;
+    private int costHighest;
     private String subtitle;
     private Date createdAt;
     private Date updatedAt;

@@ -3,6 +3,7 @@ package com.example.gj.service;
 import com.example.gj.config.response.Message;
 import com.example.gj.model.Order;
 import com.example.gj.repository.OrderRepository;
+import com.example.gj.util.Util;
 import com.example.gj.viewmodel.order_service.CreateOrderRequest;
 import com.example.gj.viewmodel.order_service.GetOrderResponse;
 import com.example.gj.viewmodel.order_service.OrderServiceRequest;
@@ -11,10 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class OrderService {
@@ -57,7 +55,7 @@ public class OrderService {
     }
 
     public boolean updateStatus(String id, int status) throws Exception {
-        if (id == null || status < 1 || status > 3) {
+        if (id == null || status < 0 || status > 3) {
             throw new Exception(Message.INVALID_INPUT);
         }
 
@@ -92,12 +90,41 @@ public class OrderService {
             }
         }
 
-
-
         order.setStatus(status);
         order.setUpdatedAt(new Date());
         orderRepository.save(order);
 
         return true;
+    }
+
+    public List<Long> countOrderPerDay(Date startDate, Date endDate) {
+        List<Object[]> results = orderRepository.countOrdersByDay(startDate, endDate);
+
+        // Create a map to store counts for each day
+        Map<Integer, Long> countsMap = new HashMap<>();
+
+        // Initialize counts for all days to 0
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(startDate);
+        while (!calendar.getTime().after(endDate)) {
+            countsMap.put(calendar.get(Calendar.DAY_OF_MONTH), 0L);
+            calendar.add(Calendar.DAY_OF_MONTH, 1);
+        }
+
+        // Populate counts from query results
+        for (Object[] result : results) {
+            Integer dayOfMonth = (Integer) result[0];
+            Long count = (Long) result[1];
+            countsMap.put(dayOfMonth, count);
+        }
+
+        // Convert map values to list
+        List<Long> counts = new ArrayList<>(countsMap.values());
+        return counts;
+    }
+
+    public long totalRevenue(Date startDate, Date endDate) {
+        Long result =  orderRepository.sumServicePricesInDay(startDate, endDate);
+        return result == null ? 0 : result.longValue();
     }
 }

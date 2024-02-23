@@ -8,6 +8,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -28,17 +29,29 @@ public class AccessLogService {
         accessLogRepository.save(accessLog);
     }
 
-    public List<Long> getAccessCountByMonth(int year, int month) {
-        List<Long> list = new ArrayList<>();
-        LocalDate startDate = LocalDate.of(year, month, 1);
-        LocalDate endDate = startDate.with(TemporalAdjusters.lastDayOfMonth());
+    public List<Long> countAccessLogsByDay(LocalDate startDate, LocalDate endDate) {
+        List<Object[]> results = accessLogRepository.countAccessLogsPerDay(startDate, endDate);
 
-        for (LocalDate date = startDate; !date.isAfter(endDate);date = date.plusDays(1)) {
-            long count = accessLogRepository.countAccessLogsByAccessDate(date);
-            list.add(count);
+        // Create a map to store counts for each day
+        Map<Integer, Long> countsMap = new HashMap<>();
+
+        // Initialize counts for all days to 0
+        LocalDate currentDate = startDate;
+        while (!currentDate.isAfter(endDate)) {
+            countsMap.put(currentDate.getDayOfMonth(), 0L);
+            currentDate = currentDate.plusDays(1);
         }
 
-        return list;
+        // Populate counts from query results
+        for (Object[] result : results) {
+            Integer dayOfMonth = (Integer) result[0];
+            Long count = (Long) result[1];
+            countsMap.put(dayOfMonth, count);
+        }
+
+        // Convert map values to list
+        List<Long> counts = new ArrayList<>(countsMap.values());
+        return counts;
     }
 
 

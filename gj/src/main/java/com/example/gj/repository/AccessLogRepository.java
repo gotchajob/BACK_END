@@ -13,4 +13,7 @@ import java.util.Map;
 @Repository
 public interface AccessLogRepository extends JpaRepository<AccessLog, Integer> {
     long countAccessLogsByAccessDate(LocalDate date);
+
+    @Query("SELECT DAY(o.accessDate), COUNT(o) FROM AccessLog o WHERE o.accessDate >= :startDate AND o.accessDate <= :endDate GROUP BY DAY(o.accessDate)")
+    List<Object[]> countAccessLogsPerDay(LocalDate startDate, LocalDate endDate);
 }

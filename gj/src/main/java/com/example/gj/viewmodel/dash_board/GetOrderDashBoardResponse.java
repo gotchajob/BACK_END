@@ -7,9 +7,8 @@ import java.util.List;
 
 @Data
 @AllArgsConstructor
-public class GetUserDashBoardResponse {
-    private List<Long> accessTime;
-    private long newUser;
-    private long newAdvise;
-    private long total;
+public class GetOrderDashBoardResponse {
+    List<Long> timeOrder;
+    long totalOrder;
+    long revenue;
 }

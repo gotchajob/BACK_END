@@ -3,6 +3,7 @@ package com.example.gj.controller;
 import com.example.gj.model.Response;
 import com.example.gj.service.DashBoardService;
 import com.example.gj.viewmodel.advise.AdviseRequest;
+import com.example.gj.viewmodel.dash_board.GetOrderDashBoardResponse;
 import com.example.gj.viewmodel.dash_board.GetUserDashBoardResponse;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -19,9 +20,19 @@ public class DashBoardController {
     }
 
     @GetMapping("/user")
-    public ResponseEntity<Response<GetUserDashBoardResponse>> create(@RequestParam int year, @RequestParam int month) {
+    public ResponseEntity<Response<GetUserDashBoardResponse>> getUserDashBoard(@RequestParam int year, @RequestParam int month) {
         try {
             GetUserDashBoardResponse response = dashBoardService.getUserDashBoard(year, month);
+            return Response.success(response);
+        } catch (Exception e) {
+            return Response.error(e);
+        }
+    }
+
+    @GetMapping("/order")
+    public ResponseEntity<Response<GetOrderDashBoardResponse>> getOrderDashBoard(@RequestParam int year, @RequestParam int month) {
+        try {
+            GetOrderDashBoardResponse response = dashBoardService.getOrderDashBoard(year, month);
             return Response.success(response);
         } catch (Exception e) {
             return Response.error(e);

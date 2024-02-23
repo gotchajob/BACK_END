@@ -6,6 +6,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Random;
 
 public class Util {
@@ -56,5 +57,13 @@ public class Util {
 
         return new Date[]{startDate, endDate};
 
+    }
+
+    public static long sumList(List<Long> list) {
+        long sum = 0;
+        for (Long value : list) {
+            sum += value;
+        }
+        return sum;
     }
 }

@@ -56,7 +56,7 @@ public class AdviseService {
     }
 
     public boolean updateStatus(String id, int status) throws Exception {
-        if (id == null || status < 1 || status > 3) {
+        if (id == null || status < 0 || status > 3) {
             throw new Exception(Message.INVALID_INPUT);
         }
 
@@ -106,4 +106,6 @@ public class AdviseService {
         Date[] date = Util.getStartDateAndEndDate(year, month);
         return adviseRepository.countByCreatedAtBetween(date[0], date[1]);
     }
+
+
 }
