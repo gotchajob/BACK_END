@@ -4,6 +4,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
 
@@ -42,5 +43,18 @@ public class Util {
         return stringBuilder.toString();
     }
 
+    public static Date[] getStartDateAndEndDate(int year, int month) {
+        Calendar startCal = Calendar.getInstance();
+        startCal.set(year, month - 1, 1, 0, 0, 0);
+        startCal.set(Calendar.MILLISECOND, 0);
+        Date startDate = startCal.getTime();
 
+        Calendar endCal = Calendar.getInstance();
+        endCal.set(year, month - 1, startCal.getActualMaximum(Calendar.DAY_OF_MONTH), 23, 59, 59);
+        endCal.set(Calendar.MILLISECOND, 999);
+        Date endDate = endCal.getTime();
+
+        return new Date[]{startDate, endDate};
+
+    }
 }

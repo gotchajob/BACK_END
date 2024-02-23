@@ -90,8 +90,6 @@ public class OrderService {
             if (!order.getProcessingBy().equals(userName)) {
                 throw new Exception("User is not allow to finish order!");
             }
-
-            order.setProcessingBy(null);
         }
 
 

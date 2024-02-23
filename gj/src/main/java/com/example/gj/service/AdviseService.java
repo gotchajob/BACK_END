@@ -4,6 +4,7 @@ import com.example.gj.config.response.Message;
 import com.example.gj.config.swagger.OpenApiConfig;
 import com.example.gj.model.Advise;
 import com.example.gj.repository.AdviseRepository;
+import com.example.gj.util.Util;
 import com.example.gj.viewmodel.advise.AdviseRequest;
 import com.example.gj.viewmodel.advise.GetAdviseResponse;
 import org.springframework.data.domain.PageRequest;
@@ -92,7 +93,6 @@ public class AdviseService {
                 throw new Exception("You are not allow to finish advise");
             }
 
-            advise.setProcessingBy(null);
         }
 
         advise.setStatus(status);
@@ -100,5 +100,10 @@ public class AdviseService {
         adviseRepository.save(advise);
 
         return true;
+    }
+
+    public long countAdviseByMonth(int year, int month) {
+        Date[] date = Util.getStartDateAndEndDate(year, month);
+        return adviseRepository.countByCreatedAtBetween(date[0], date[1]);
     }
 }

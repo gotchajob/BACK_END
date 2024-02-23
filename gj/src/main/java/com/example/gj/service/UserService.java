@@ -4,6 +4,7 @@ import com.example.gj.config.response.Message;
 import com.example.gj.model.User;
 import com.example.gj.repository.UserRepository;
 import com.example.gj.util.JwtUtil;
+import com.example.gj.util.Util;
 import com.example.gj.validator.EmailValidator;
 import com.example.gj.validator.PasswordValidator;
 import com.example.gj.viewmodel.user.*;
@@ -188,6 +189,11 @@ public class UserService {
         }
 
         return user.get();
+    }
+
+    public long countUserByMonth(int year, int month) {
+        Date[] date = Util.getStartDateAndEndDate(year, month);
+        return userRepository.countByCreatedAtBetween(date[0], date[1]);
     }
 
 
