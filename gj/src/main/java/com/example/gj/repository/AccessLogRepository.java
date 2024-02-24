@@ -16,4 +16,6 @@ public interface AccessLogRepository extends JpaRepository<AccessLog, Integer> {
 
     @Query("SELECT DAY(o.accessDate), COUNT(o) FROM AccessLog o WHERE o.accessDate >= :startDate AND o.accessDate <= :endDate GROUP BY DAY(o.accessDate)")
     List<Object[]> countAccessLogsPerDay(LocalDate startDate, LocalDate endDate);
+
+    long countAccessLogsByAccessDateBefore(LocalDate date);
 }

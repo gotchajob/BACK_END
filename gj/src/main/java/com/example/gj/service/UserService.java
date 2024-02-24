@@ -196,5 +196,14 @@ public class UserService {
         return userRepository.countByCreatedAtBetween(date[0], date[1]);
     }
 
+    public List<Long> countUserPerDay(Date startDate, Date endDate) {
+        List<Object[]> results = userRepository.countUsersPerDay(startDate, endDate);
+        return Util.convertToList(startDate, endDate, results);
+    }
+
+    public long totalUserBefore(Date endDate) {
+        return userRepository.countByCreatedAtBefore(endDate);
+    }
+
 
 }

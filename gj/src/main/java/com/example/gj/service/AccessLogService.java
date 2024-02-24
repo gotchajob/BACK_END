@@ -54,5 +54,9 @@ public class AccessLogService {
         return counts;
     }
 
+    public long totalAccessBefore(LocalDate endDate) {
+        return accessLogRepository.countAccessLogsByAccessDateBefore(endDate);
+    }
+
 
 }

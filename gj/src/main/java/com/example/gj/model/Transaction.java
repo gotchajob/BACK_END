@@ -11,12 +11,14 @@ import java.util.Date;
 public class Transaction {
     @Id
     private String id;
-    private String userId;
+    private String email;
+    private String phone;
+    private String fullName;
     private int paymentId;
+    private int serviceId;
     private int cost;
-    private String service_id;
     private int status;
-    private Date created_at;
-    private Date updated_at;
+    private Date createdAt;
+    private Date updateAt;
 }
 

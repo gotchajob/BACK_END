@@ -11,4 +11,5 @@ public class GetOrderDashBoardResponse {
     List<Long> timeOrder;
     long totalOrder;
     long revenue;
+    long totalOrderBefore;
 }

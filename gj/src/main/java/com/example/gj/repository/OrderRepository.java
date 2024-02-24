@@ -18,4 +18,6 @@ public interface OrderRepository extends JpaRepository<Order, String> {
 
     @Query("SELECT DAY(o.createdAt), COUNT(o) FROM Order o WHERE o.createdAt >= :startDate AND o.createdAt <= :endDate GROUP BY DAY(o.createdAt)")
     List<Object[]> countOrdersByDay(Date startDate, Date endDate);
+
+    long countByCreatedAtBefore(Date date);
 }

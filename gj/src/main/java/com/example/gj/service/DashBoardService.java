@@ -34,13 +34,30 @@ public class DashBoardService {
         LocalDate startDate = LocalDate.of(year, month, 1);
         LocalDate endDate = startDate.with(TemporalAdjusters.lastDayOfMonth());
 
+        Date[] date = Util.getStartDateAndEndDate(year, month);
+
 
         List<Long> timeAccess = accessLogService.countAccessLogsByDay(startDate, endDate);
-        long newUser = userService.countUserByMonth(year, month);
-        long newAdvise = adviseService.countAdviseByMonth(year, month);
-        long total = Util.sumList(timeAccess);
+        List<Long> newUserList = userService.countUserPerDay(date[0], date[1]);
 
-        return new GetUserDashBoardResponse(timeAccess, newUser, newAdvise, total);
+        long totalAccess = Util.sumList(timeAccess);
+        long totalUser = Util.sumList(newUserList);
+
+        long totalUserBefore = userService.totalUserBefore(date[1]);
+        long totalAccessBefore = accessLogService.totalAccessBefore(endDate);
+
+        long newAdvise = adviseService.countAdviseByMonth(year, month);
+
+
+        return GetUserDashBoardResponse.builder()
+                .timeAccess(timeAccess)
+                .newUser(newUserList)
+                .totalAccess(totalAccess)
+                .totalUser(totalUser)
+                .totalAccessBefore(totalAccessBefore)
+                .totalUserBefore(totalUserBefore)
+                .newAdvise(newAdvise)
+                .build();
     }
 
     public GetOrderDashBoardResponse getOrderDashBoard(int year, int month) throws Exception {
@@ -52,8 +69,9 @@ public class DashBoardService {
         List<Long> timeOrder = orderService.countOrderPerDay(date[0], date[1]);
         long total = Util.sumList(timeOrder);
         long revenue = orderService.totalRevenue(date[0], date[1]);
+        long totalOrderBefore = orderService.totalOrderBefore(date[1]);
 
-        return new GetOrderDashBoardResponse(timeOrder, total, revenue);
+        return new GetOrderDashBoardResponse(timeOrder, total, revenue, totalOrderBefore);
 
     }
 }

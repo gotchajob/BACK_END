@@ -16,9 +16,10 @@ import java.util.*;
 
 @Service
 public class OrderService {
-    final OrderRepository orderRepository;
-    final EmailService emailService;
-    final UserService userService;
+    private final OrderRepository orderRepository;
+    private final EmailService emailService;
+    private final UserService userService;
+
 
     public OrderService(OrderRepository orderRepository, EmailService emailService, UserService userService) {
         this.orderRepository = orderRepository;
@@ -99,32 +100,14 @@ public class OrderService {
 
     public List<Long> countOrderPerDay(Date startDate, Date endDate) {
         List<Object[]> results = orderRepository.countOrdersByDay(startDate, endDate);
-
-        // Create a map to store counts for each day
-        Map<Integer, Long> countsMap = new HashMap<>();
-
-        // Initialize counts for all days to 0
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(startDate);
-        while (!calendar.getTime().after(endDate)) {
-            countsMap.put(calendar.get(Calendar.DAY_OF_MONTH), 0L);
-            calendar.add(Calendar.DAY_OF_MONTH, 1);
-        }
-
-        // Populate counts from query results
-        for (Object[] result : results) {
-            Integer dayOfMonth = (Integer) result[0];
-            Long count = (Long) result[1];
-            countsMap.put(dayOfMonth, count);
-        }
-
-        // Convert map values to list
-        List<Long> counts = new ArrayList<>(countsMap.values());
-        return counts;
+        return Util.convertToList(startDate, endDate, results);
     }
 
     public long totalRevenue(Date startDate, Date endDate) {
         Long result =  orderRepository.sumServicePricesInDay(startDate, endDate);
         return result == null ? 0 : result.longValue();
+    }
+    public long totalOrderBefore(Date endDate) {
+        return orderRepository.countByCreatedAtBefore(endDate);
     }
 }

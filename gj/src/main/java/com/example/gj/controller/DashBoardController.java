@@ -20,7 +20,7 @@ public class DashBoardController {
     }
 
     @GetMapping("/user")
-    public ResponseEntity<Response<GetUserDashBoardResponse>> getUserDashBoard(@RequestParam int year, @RequestParam int month) {
+    public ResponseEntity<Response<GetUserDashBoardResponse>> getAccessDashBoard(@RequestParam int year, @RequestParam int month) {
         try {
             GetUserDashBoardResponse response = dashBoardService.getUserDashBoard(year, month);
             return Response.success(response);
@@ -38,4 +38,6 @@ public class DashBoardController {
             return Response.error(e);
         }
     }
+
+
 }
