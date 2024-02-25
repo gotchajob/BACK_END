@@ -10,4 +10,12 @@ public class TransactionDashBoardResponse {
     private List<Long> transactionPerDay;
     private long total;
     private long revenue;
+
+    public TransactionDashBoardResponse(String service, List<Long> transactionPerDay, long revenue) {
+        this.service = service;
+        this.transactionPerDay = transactionPerDay;
+        this.revenue = revenue;
+
+        this.total = transactionPerDay.stream().mapToLong(Long::longValue).sum();
+    }
 }

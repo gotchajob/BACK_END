@@ -59,11 +59,7 @@ public class Util {
     }
 
     public static long sumList(List<Long> list) {
-        long sum = 0;
-        for (Long value : list) {
-            sum += value;
-        }
-        return sum;
+        return list.stream().mapToLong(Long::longValue).sum();
     }
 
     public static List<Long> convertToList(Date startDate, Date endDate, List<Object[]> results) {
@@ -91,5 +87,21 @@ public class Util {
         List<Long> counts = new ArrayList<>(countsMap.values());
         return counts;
     }
+
+    public static int getNumberOfDays(int year, int month) {
+        Calendar calendar = Calendar.getInstance();
+        // Set the year and month
+        calendar.set(Calendar.YEAR, year);
+        calendar.set(Calendar.MONTH, month - 1); // Calendar months are zero-based (0 - January, 1 - February, ..., 11 - December)
+        // Get the actual maximum number of days in the given month and year
+        return calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+    }
+
+    public static int getDayOfMonth(Date endDate) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(endDate);
+        return calendar.get(Calendar.DAY_OF_MONTH);
+    }
+
 
 }
