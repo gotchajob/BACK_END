@@ -1,13 +1,18 @@
 package com.example.gj.service;
 
 import com.example.gj.config.response.Message;
+import com.example.gj.model.Transaction;
 import com.example.gj.repository.TransactionRepository;
 import com.example.gj.util.Util;
 import com.example.gj.viewmodel.dash_board.TransactionDashBoardResponse;
+import com.example.gj.viewmodel.transaction.GetTransactionResponse;
+import com.example.gj.viewmodel.transaction.TransactionResponse;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class TransactionService {
@@ -74,5 +79,22 @@ public class TransactionService {
         }
 
         return dashBoardResponses;
+    }
+
+    public GetTransactionResponse getTransactionList(int page, int limit, String sortBy, String sortOrder) {
+        Sort.Direction direction = sortOrder.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
+        Pageable pageable = PageRequest.of(page - 1, limit, direction, sortBy);
+
+        List<Transaction> list = transactionRepository.getAllByStatus(1, pageable);
+
+        List<TransactionResponse> responseList = new ArrayList<>();
+
+        for (Transaction t : list) {
+            responseList.add(new TransactionResponse(t));
+        }
+
+        long total = transactionRepository.countByStatus(1);
+
+        return new GetTransactionResponse(responseList, total);
     }
 }

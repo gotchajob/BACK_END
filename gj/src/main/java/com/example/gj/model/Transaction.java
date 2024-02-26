@@ -19,7 +19,7 @@ public class Transaction {
     private long cost;
     private int status;
     private Date createdAt;
-    private Date updateAt;
+    private Date updatedAt;
     private String userId;
 
     @ManyToOne
