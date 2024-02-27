@@ -19,12 +19,14 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final EmailService emailService;
     private final UserService userService;
+    private final TransactionService transactionService;
 
 
-    public OrderService(OrderRepository orderRepository, EmailService emailService, UserService userService) {
+    public OrderService(OrderRepository orderRepository, EmailService emailService, UserService userService, TransactionService transactionService) {
         this.orderRepository = orderRepository;
         this.emailService = emailService;
         this.userService = userService;
+        this.transactionService = transactionService;
     }
 
 
@@ -89,6 +91,8 @@ public class OrderService {
             if (!order.getProcessingBy().equals(userName)) {
                 throw new Exception("User is not allow to finish order!");
             }
+
+            transactionService.createTransaction(order);
         }
 
         order.setStatus(status);

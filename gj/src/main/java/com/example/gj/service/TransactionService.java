@@ -1,7 +1,9 @@
 package com.example.gj.service;
 
 import com.example.gj.config.response.Message;
+import com.example.gj.model.Order;
 import com.example.gj.model.Transaction;
+import com.example.gj.model.User;
 import com.example.gj.repository.TransactionRepository;
 import com.example.gj.util.Util;
 import com.example.gj.viewmodel.dash_board.TransactionDashBoardResponse;
@@ -19,10 +21,12 @@ public class TransactionService {
 
     private final TransactionRepository transactionRepository;
     private final ServiceService serviceService;
+    private final UserService userService;
 
-    public TransactionService(TransactionRepository transactionRepository, ServiceService serviceService) {
+    public TransactionService(TransactionRepository transactionRepository, ServiceService serviceService, UserService userService) {
         this.transactionRepository = transactionRepository;
         this.serviceService = serviceService;
+        this.userService = userService;
     }
 
 
@@ -96,5 +100,18 @@ public class TransactionService {
         long total = transactionRepository.countByStatus(1);
 
         return new GetTransactionResponse(responseList, total);
+    }
+
+    public boolean createTransaction(Order order) {
+        if (order == null) {
+            return false;
+        }
+
+        String currentUserId = userService.getCurrentUserId();
+        Transaction transaction = new Transaction(order, currentUserId);
+
+        transactionRepository.save(transaction);
+
+        return true;
     }
 }

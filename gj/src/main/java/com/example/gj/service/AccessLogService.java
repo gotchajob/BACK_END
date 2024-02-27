@@ -2,6 +2,7 @@ package com.example.gj.service;
 
 import com.example.gj.model.AccessLog;
 import com.example.gj.repository.AccessLogRepository;
+import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -56,6 +57,14 @@ public class AccessLogService {
 
     public long totalAccessBefore(LocalDate endDate) {
         return accessLogRepository.countAccessLogsByAccessDateBefore(endDate);
+    }
+
+    public boolean createAccessLog() {
+        AccessLog accessLog = new AccessLog();
+        accessLog.setAccessDate(LocalDate.now());
+
+        accessLogRepository.save(accessLog);
+        return true;
     }
 
 

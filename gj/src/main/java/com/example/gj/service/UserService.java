@@ -144,6 +144,20 @@ public class UserService {
       return new UserResponse(user);
     };
 
+    public String getCurrentUserId() {
+        String email = getCurrentUsername();
+        if (email == null) {
+            return null;
+        }
+
+        User user = userRepository.findByEmail(email);
+        if (user == null || user.getStatus() == 0) {
+            return null;
+        }
+
+        return user.getId();
+    }
+
 
 
     public String getCurrentUsername() {

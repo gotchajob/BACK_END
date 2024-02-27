@@ -23,6 +23,9 @@ public class AnswerService {
 
     public void createAnswer(List<CreateAnswerRequest> request) throws Exception {
         UserResponse user = userService.getCurrentUser();
+        if (user == null) {
+            throw new Exception(Message.NO_AUTH);
+        }
 
         for (CreateAnswerRequest req : request) {
             if (req == null || req.getQuestionId() == null || req.getAnswer() == null) {
