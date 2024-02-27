@@ -62,10 +62,24 @@ public class UserService {
         if(userLogin == null || userLogin.getEmail() == null || userLogin.getPassword() == null){
             throw new Exception("LOGIN_FAIL");
         }
+        User user = userRepository.findByEmail(userLogin.getEmail());
+        if (user == null || !bCryptPasswordEncoder.matches(userLogin.getPassword(), user.getPassword()))  {
+            throw new Exception("Invalid user name or password");
+        }
+
+        if (user.getStatus() == 0) {
+            throw new Exception("User is banned");
+        }
+
+        if (user.getStatus() == 2) {
+            throw new Exception("User is not verify");
+        }
+
+
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(userLogin.getEmail(), userLogin.getPassword()));
 
-        User user = userRepository.findByEmail(userLogin.getEmail());
+
 
         String token = jwt.generateToken(user.getEmail());
         return new AuthenticationResponse(token, new UserResponse(user));
