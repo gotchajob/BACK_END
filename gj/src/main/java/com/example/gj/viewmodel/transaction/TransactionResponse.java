@@ -16,6 +16,7 @@ public class TransactionResponse {
     private String name;
     private String phone;
     private String serviceName;
+    private String paymentName;
     private long total;
     private Date createdAt;
 
@@ -26,6 +27,7 @@ public class TransactionResponse {
             this.name = transaction.getFullName();
             this.phone = transaction.getPhone();
             this.serviceName = transaction.getService().getTitle();
+            this.paymentName = transaction.getPayment().getName();
             this.total = transaction.getCost();
             this.createdAt = transaction.getCreatedAt();
         }
