@@ -62,12 +62,13 @@ public class EmailService {
         sendEmail(email, subject, body);
     }
 
-    public void sendMailOrderService(String customerName, String customerPhone, String customerEmail) {
+    public void sendMailOrderService(String customerName, String customerPhone, String customerEmail, String code) {
         String subject = "Customer order service";
         String body = "information of Customer:\n" +
                 "fullName: " + customerName + "\n" +
                 "phone: " + customerPhone + "\n" +
-                "email: " + customerEmail + "\n";
+                "email: " + customerEmail + "\n" +
+                "code: " + code + "\n";
 
         sendEmail(ADMIN_EMAIL, subject, body);
     }

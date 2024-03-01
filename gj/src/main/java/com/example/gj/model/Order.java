@@ -23,6 +23,7 @@ public class Order {
     private Date createdAt;
     private Date updatedAt;
     private String processingBy;
+    private String code;
 
     @ManyToOne
     @JoinColumn(name = "payment_id", referencedColumnName = "id")
@@ -33,7 +34,7 @@ public class Order {
     private Service service;
 
 
-    public Order(CreateOrderRequest request) {
+    public Order(CreateOrderRequest request, String code) {
         this.id = UUID.randomUUID().toString();
         this.service = new Service(request.getServiceId());
         this.email = request.getEmail();
@@ -44,5 +45,6 @@ public class Order {
         this.status = 1;
         this.createdAt = new Date();
         this.updatedAt = new Date();
+        this.code = code;
     }
 }

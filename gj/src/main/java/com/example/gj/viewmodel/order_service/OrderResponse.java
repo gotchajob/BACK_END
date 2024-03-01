@@ -18,6 +18,7 @@ public class OrderResponse {
     private Date created;
     private int total;
     private String processingBy;
+    private String code;
 
     public OrderResponse(Order order) {
         this.id = order.getId();
@@ -30,5 +31,6 @@ public class OrderResponse {
         this.created = order.getCreatedAt();
         this.total = order.getTotal();
         this.processingBy = order.getProcessingBy();
+        this.code = order.getCode();
     }
 }

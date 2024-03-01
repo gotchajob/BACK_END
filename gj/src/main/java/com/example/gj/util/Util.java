@@ -103,5 +103,20 @@ public class Util {
         return calendar.get(Calendar.DAY_OF_MONTH);
     }
 
+    public static String generateRandomCode() {
+        String characters = "abcdefghijklmnopqrstuvwxyz0123456789";
+
+        StringBuilder code = new StringBuilder();
+
+        Random random = new Random();
+
+        for (int i = 0; i < 8; i++) {
+            int randomIndex = random.nextInt(characters.length());
+            code.append(characters.charAt(randomIndex));
+        }
+
+        return code.toString();
+    }
+
 
 }

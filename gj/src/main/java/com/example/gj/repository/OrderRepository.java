@@ -20,4 +20,6 @@ public interface OrderRepository extends JpaRepository<Order, String> {
     List<Object[]> countOrdersByDay(Date startDate, Date endDate);
 
     long countByCreatedAtBefore(Date date);
+
+    Order getOrderByCodeAndStatus(String code, int status);
 }

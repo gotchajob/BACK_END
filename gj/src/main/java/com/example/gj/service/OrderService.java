@@ -6,6 +6,7 @@ import com.example.gj.repository.OrderRepository;
 import com.example.gj.util.Util;
 import com.example.gj.viewmodel.order_service.CreateOrderRequest;
 import com.example.gj.viewmodel.order_service.GetOrderResponse;
+import com.example.gj.viewmodel.order_service.OrderResponse;
 import com.example.gj.viewmodel.order_service.OrderServiceRequest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -30,7 +31,7 @@ public class OrderService {
     }
 
 
-    public boolean orderService(CreateOrderRequest request) throws Exception {
+    public OrderResponse orderService(CreateOrderRequest request) throws Exception {
         if (request == null || request.getName() == null || request.getPhone() == null || request.getEmail() == null) {
             throw new Exception(Message.NULL_INPUT);
         }
@@ -39,11 +40,34 @@ public class OrderService {
             throw  new Exception(Message.INVALID_INPUT);
         }
 
-        orderRepository.save(new Order(request));
+        String code = getOrderCode();
+        if (code == null) {
+            throw new Exception("Error when generate code for order");
+        }
 
-        emailService.sendMailOrderService(request.getName(), request.getPhone(), request.getEmail());
+        Order order =  orderRepository.save(new Order(request, code));
 
-        return true;
+        emailService.sendMailOrderService(request.getName(), request.getPhone(), request.getEmail(), code);
+
+        return new OrderResponse(order);
+    }
+
+    private String getOrderCode() {
+        int count = 0;
+        String code = null;
+        while (count < 5) {
+            code = Util.generateRandomCode();
+            Order order = orderRepository.getOrderByCodeAndStatus(code, 1);
+            if (order == null) {
+                break;
+            }
+        }
+
+        if (count == 5) {
+            return null;
+        }
+
+        return code;
     }
 
     public GetOrderResponse get(int page, int limit, String sortBy, String sortOrder) {

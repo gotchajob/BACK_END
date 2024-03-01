@@ -7,6 +7,7 @@ import com.example.gj.util.Role;
 import com.example.gj.viewmodel.advise.UpdateStatusRequest;
 import com.example.gj.viewmodel.order_service.CreateOrderRequest;
 import com.example.gj.viewmodel.order_service.GetOrderResponse;
+import com.example.gj.viewmodel.order_service.OrderResponse;
 import com.example.gj.viewmodel.order_service.OrderServiceRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
@@ -22,10 +23,10 @@ public class OrderController {
     }
 
     @PostMapping("")
-    public ResponseEntity<Response<Object>> orderService(@RequestBody CreateOrderRequest request) {
+    public ResponseEntity<Response<OrderResponse>> orderService(@RequestBody CreateOrderRequest request) {
         try {
-            orderService.orderService(request);
-            return Response.success(null);
+            OrderResponse response  = orderService.orderService(request);
+            return Response.success(response);
         } catch (Exception e) {
             return Response.error(e);
         }

@@ -14,13 +14,7 @@ public class HomeService {
         this.emailService = emailService;
     }
 
-    public void orderService(OrderServiceRequest request) throws Exception {
-        if (request == null || request.getFullName() == null || request.getPhone() == null || request.getEmail() == null) {
-            throw new Exception(Message.NULL_INPUT);
-        }
 
-        emailService.sendMailOrderService(request.getFullName(), request.getPhone(), request.getEmail());
-    }
 
     public void subscribeNews(SubscribeNewsRequest request) throws Exception {
         if (request == null || request.getEmail() == null) {
