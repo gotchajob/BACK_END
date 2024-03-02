@@ -19,4 +19,7 @@ public interface TransactionRepository extends JpaRepository<Transaction, String
 
     long countByStatus(int status);
 
+    @Query("SELECT count(t), sum(t.cost) from Transaction t where t.status = 1")
+    Long[] countAndSumTotalTransaction();
+
 }

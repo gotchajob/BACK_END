@@ -10,4 +10,6 @@ import java.util.List;
 public class GetTransactionDashBoardResponse {
     private TransactionDashBoardResponse totalTransaction;
     private List<TransactionDashBoardResponse> listTransaction;
+    private long count;
+    private long sumCost;
 }

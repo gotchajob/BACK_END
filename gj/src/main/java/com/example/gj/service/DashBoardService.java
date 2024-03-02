@@ -82,17 +82,31 @@ public class DashBoardService {
     }
 
     public GetTransactionDashBoardResponse getTransactionDashBoard(int year, int month) throws Exception {
+
+        //get transaction per day in month of services
         Date[] date = Util.getStartDateAndEndDate(year, month);
         List<TransactionDashBoardResponse> transactionDashBoardResponses = transactionService.getTransactionDashBoard(date[0], date[1]);
         if (transactionDashBoardResponses == null) {
             return null; // TODO: check exception of this;
         }
 
-        long totalTransactionCount = 0;
+        //get total
+        TransactionDashBoardResponse totalTransaction = getTransactionTotal(transactionDashBoardResponses);
+
+        //get count transaction and sum cost
+        Long[] countAndSum = transactionService.getCountAndSumCostTransaction();
+        long count = countAndSum[0] == null ? 0 : countAndSum[0].longValue();
+        long sum = countAndSum[1] == null ? 0 : countAndSum[1].longValue();
+
+
+        return new GetTransactionDashBoardResponse(totalTransaction, transactionDashBoardResponses, count, sum);
+    }
+
+    private TransactionDashBoardResponse getTransactionTotal(List<TransactionDashBoardResponse> transactionDashBoardResponses) {
         long totalRevenue = 0;
         List<Long> totalTransactionPerDay = new ArrayList<>();
 
-         //Initialize totalTransactionPerDay list with zeros
+        //Initialize totalTransactionPerDay list with zeros
         int numDays = transactionDashBoardResponses.isEmpty() ? 0 : transactionDashBoardResponses.get(0).getTransactionPerDay().size();
         for (int i = 0; i < numDays; i++) {
             totalTransactionPerDay.add(0L);
@@ -100,15 +114,12 @@ public class DashBoardService {
 
         // Sum up transaction counts per day and revenue
         for (TransactionDashBoardResponse response : transactionDashBoardResponses) {
-            totalTransactionCount += response.getTotal();
             totalRevenue += response.getRevenue();
             for (int i = 0; i < totalTransactionPerDay.size(); i++) {
                 totalTransactionPerDay.set(i, totalTransactionPerDay.get(i) + response.getTransactionPerDay().get(i));
             }
         }
 
-        TransactionDashBoardResponse totalTransaction = new TransactionDashBoardResponse("TOTAL", totalTransactionPerDay, totalRevenue);
-
-        return new GetTransactionDashBoardResponse(totalTransaction, transactionDashBoardResponses);
+        return new TransactionDashBoardResponse("TOTAL", totalTransactionPerDay, totalRevenue);
     }
 }

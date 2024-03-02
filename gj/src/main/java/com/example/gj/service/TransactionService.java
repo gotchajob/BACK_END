@@ -85,6 +85,10 @@ public class TransactionService {
         return dashBoardResponses;
     }
 
+    public Long[] getCountAndSumCostTransaction() {
+        return transactionRepository.countAndSumTotalTransaction();
+    }
+
     public GetTransactionResponse getTransactionList(int page, int limit, String sortBy, String sortOrder) {
         Sort.Direction direction = sortOrder.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
         Pageable pageable = PageRequest.of(page - 1, limit, direction, sortBy);
