@@ -145,9 +145,9 @@ public class VerifyService {
 
             verifyRepository.save(_verify);
         } else {
-//            if (verify.getExpireDate().after(new Date(System.currentTimeMillis() + TIME_EXPIRE - TIME_AWAIT))) {
-//                throw new Exception(Message.WAIT);
-//            }
+            if (verify.getExpireDate().after(new Date(System.currentTimeMillis() + TIME_EXPIRE - TIME_AWAIT))) {
+                throw new Exception(Message.WAIT);
+            }
             verify.setCode(code);
             verify.setStatus(1);
             verify.setExpireDate(expire);

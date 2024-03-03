@@ -1,6 +1,7 @@
 package com.example.gj.repository;
 
 import com.example.gj.model.Transaction;
+import com.example.gj.viewmodel.transaction.TransactionSummary;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -19,7 +20,7 @@ public interface TransactionRepository extends JpaRepository<Transaction, String
 
     long countByStatus(int status);
 
-    @Query("SELECT count(t), sum(t.cost) from Transaction t where t.status = 1")
-    Long[] countAndSumTotalTransaction();
+    @Query("SELECT SUM(t.cost) FROM Transaction t WHERE t.status = 1")
+    long sumCost();
 
 }

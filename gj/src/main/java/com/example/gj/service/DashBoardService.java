@@ -7,6 +7,7 @@ import com.example.gj.viewmodel.dash_board.GetOrderDashBoardResponse;
 import com.example.gj.viewmodel.dash_board.GetTransactionDashBoardResponse;
 import com.example.gj.viewmodel.dash_board.GetUserDashBoardResponse;
 import com.example.gj.viewmodel.dash_board.TransactionDashBoardResponse;
+import com.example.gj.viewmodel.transaction.TransactionSummary;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.UndeclaredThrowableException;
@@ -95,16 +96,10 @@ public class DashBoardService {
 
         //get count transaction and sum cost
 
-        Long[] countAndSum = transactionService.getCountAndSumCostTransaction();
-        long count = 0;
-        long sum = 0;
+        long count = transactionService.countTransactions();
+        long sumCost = transactionService.sumCost();
 
-        if (!(countAndSum == null || countAndSum.length < 2)) {
-            count = countAndSum[0];
-            sum = countAndSum[1];
-        }
-
-        return new GetTransactionDashBoardResponse(totalTransaction, transactionDashBoardResponses, count, sum);
+        return new GetTransactionDashBoardResponse(totalTransaction, transactionDashBoardResponses, count, sumCost);
     }
 
     private TransactionDashBoardResponse getTransactionTotal(List<TransactionDashBoardResponse> transactionDashBoardResponses) {

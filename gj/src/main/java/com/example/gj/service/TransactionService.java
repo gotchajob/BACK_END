@@ -9,6 +9,7 @@ import com.example.gj.util.Util;
 import com.example.gj.viewmodel.dash_board.TransactionDashBoardResponse;
 import com.example.gj.viewmodel.transaction.GetTransactionResponse;
 import com.example.gj.viewmodel.transaction.TransactionResponse;
+import com.example.gj.viewmodel.transaction.TransactionSummary;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -18,6 +19,7 @@ import java.util.*;
 
 @Service
 public class TransactionService {
+    private final int ACTIVE_TRANSACTION = 1;
 
     private final TransactionRepository transactionRepository;
     private final ServiceService serviceService;
@@ -85,8 +87,13 @@ public class TransactionService {
         return dashBoardResponses;
     }
 
-    public Long[] getCountAndSumCostTransaction() {
-        return transactionRepository.countAndSumTotalTransaction();
+    public long countTransactions() {
+        return transactionRepository.countByStatus(ACTIVE_TRANSACTION);
+    }
+
+    public long sumCost() {
+        Long sum = transactionRepository.sumCost();
+        return sum != null ? sum : 0L;
     }
 
     public GetTransactionResponse getTransactionList(int page, int limit, String sortBy, String sortOrder) {
