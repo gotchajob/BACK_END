@@ -94,10 +94,15 @@ public class DashBoardService {
         TransactionDashBoardResponse totalTransaction = getTransactionTotal(transactionDashBoardResponses);
 
         //get count transaction and sum cost
-        Long[] countAndSum = transactionService.getCountAndSumCostTransaction();
-        long count = countAndSum[0] == null ? 0 : countAndSum[0].longValue();
-        long sum = countAndSum[1] == null ? 0 : countAndSum[1].longValue();
 
+        Long[] countAndSum = transactionService.getCountAndSumCostTransaction();
+        long count = 0;
+        long sum = 0;
+
+        if (!(countAndSum == null || countAndSum.length < 2)) {
+            count = countAndSum[0];
+            sum = countAndSum[1];
+        }
 
         return new GetTransactionDashBoardResponse(totalTransaction, transactionDashBoardResponses, count, sum);
     }
