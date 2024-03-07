@@ -25,12 +25,30 @@ public class NotifyService {
         String currentUserId = userService.getCurrentUserId();
         Pageable pageable = Util.generatePage(page, limit, sortBy, orderBy);
 
-        List<Notify> notifyList = notifyRepository.getAllByUserIdAndStatus(currentUserId, Status.ACTIVE, pageable);
+        List<Notify> notifyList = notifyRepository.getAllByEmailAndStatus(currentUserId, Status.ACTIVE, pageable);
         if (notifyList == null) {
             notifyList = Collections.EMPTY_LIST;
         }
-        long total = notifyRepository.countByUserIdAndStatus(currentUserId, Status.ACTIVE);
+        long total = notifyRepository.countByEmailAndStatus(currentUserId, Status.ACTIVE);
 
         return new GetNotifyResponse(notifyList, total);
+    }
+
+    public boolean createNotifyForCreateOrder(String email, String orderId) {
+        String title = "New Order Created";
+        String description = "Order " + orderId + " has been created for user " + email;
+        Notify notify = new Notify(email, title, description);
+        notifyRepository.save(notify);
+
+        return true;
+    }
+
+    public boolean createNotifyForFinishOrder(String email, String orderId) {
+        String title = "Finish order";
+        String description = "Your order " + orderId + " has been accept!";
+        Notify notify = new Notify(email, title, description);
+        notifyRepository.save(notify);
+
+        return true;
     }
 }

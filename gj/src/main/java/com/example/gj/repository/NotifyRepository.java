@@ -10,6 +10,6 @@ import java.util.List;
 @Repository
 public interface NotifyRepository extends JpaRepository<Notify, String> {
 
-    List<Notify> getAllByUserIdAndStatus(String userId, int status, Pageable pageable);
-    long countByUserIdAndStatus(String userId, int status);
+    List<Notify> getAllByEmailAndStatus(String email, int status, Pageable pageable);
+    long countByEmailAndStatus(String email, int status);
 }

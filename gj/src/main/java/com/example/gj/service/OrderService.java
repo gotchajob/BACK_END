@@ -1,6 +1,7 @@
 package com.example.gj.service;
 
 import com.example.gj.config.response.Message;
+import com.example.gj.model.Book;
 import com.example.gj.model.Order;
 import com.example.gj.repository.OrderRepository;
 import com.example.gj.util.Util;
@@ -21,13 +22,17 @@ public class OrderService {
     private final EmailService emailService;
     private final UserService userService;
     private final TransactionService transactionService;
+    private final NotifyService notifyService;
+    private final BookService bookService;
 
 
-    public OrderService(OrderRepository orderRepository, EmailService emailService, UserService userService, TransactionService transactionService) {
+    public OrderService(OrderRepository orderRepository, EmailService emailService, UserService userService, TransactionService transactionService, NotifyService notifyService, BookService bookService) {
         this.orderRepository = orderRepository;
         this.emailService = emailService;
         this.userService = userService;
         this.transactionService = transactionService;
+        this.notifyService = notifyService;
+        this.bookService = bookService;
     }
 
 
@@ -46,7 +51,7 @@ public class OrderService {
         }
 
         Order order =  orderRepository.save(new Order(request, code));
-        //TODO: create notify
+        notifyService.createNotifyForCreateOrder(request.getEmail(), order.getId());
 
         emailService.sendMailOrderService(request.getName(), request.getPhone(), request.getEmail(), code);
 
@@ -109,8 +114,8 @@ public class OrderService {
             order.setProcessingBy(userName);
             transactionService.createTransaction(order);
 
-            //todo: create notify
-            //todo: create booking
+            notifyService.createNotifyForFinishOrder(order.getEmail(), order.getId());
+            bookService.createBookingForOrder(order);
         }
 
         order.setStatus(status);

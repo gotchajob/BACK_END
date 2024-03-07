@@ -3,6 +3,7 @@ package com.example.gj.controller;
 import com.example.gj.model.Response;
 import com.example.gj.service.BookService;
 import com.example.gj.util.Role;
+import com.example.gj.viewmodel.book.GetBookResponse;
 import com.example.gj.viewmodel.transaction.GetTransactionResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
@@ -29,12 +30,13 @@ public class BookController {
 
     @GetMapping("/get-by-user")
     @Secured(Role.USER)
-    public ResponseEntity<Response<String>> getListByUser(@RequestParam(defaultValue = "1") int page,
-                                                                          @RequestParam(defaultValue = "5") int limit,
-                                                                          @RequestParam(defaultValue = "createdAt",required = false) String sortBy,
-                                                                          @RequestParam(defaultValue = "asc",required = false) String sortOrder) {
+    public ResponseEntity<Response<GetBookResponse>> getListByUser(@RequestParam(defaultValue = "1") int page,
+                                                                   @RequestParam(defaultValue = "5") int limit,
+                                                                   @RequestParam(defaultValue = "createdAt",required = false) String sortBy,
+                                                                   @RequestParam(defaultValue = "asc",required = false) String sortOrder) {
         try {
-            return Response.success(null);
+            GetBookResponse response = bookService.getBookByUser(page, limit, sortBy, sortOrder);
+            return Response.success(response);
         } catch (Exception e) {
             return Response.error(e);
         }
