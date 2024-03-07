@@ -113,6 +113,23 @@ public class TransactionService {
         return new GetTransactionResponse(responseList, total);
     }
 
+    public GetTransactionResponse getTransactionListByUser(int page, int limit, String sortBy, String sortOrder) {
+        String currentEmail = userService.getCurrentUsername();
+        Pageable pageable = Util.generatePage(page, limit, sortBy, sortOrder);
+
+        List<Transaction> list = transactionRepository.getAllByStatusAndEmail(1, currentEmail, pageable);
+
+        List<TransactionResponse> responseList = new ArrayList<>();
+
+        for (Transaction t : list) {
+            responseList.add(new TransactionResponse(t));
+        }
+
+        long total = transactionRepository.countByStatusAndEmail(1, currentEmail);
+
+        return new GetTransactionResponse(responseList, total);
+    }
+
     public boolean createTransaction(Order order) {
         if (order == null) {
             return false;

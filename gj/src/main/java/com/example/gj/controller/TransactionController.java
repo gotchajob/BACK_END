@@ -34,4 +34,18 @@ public class TransactionController {
             return Response.error(e);
         }
     }
+
+    @GetMapping("/get-by-user")
+    @Secured(Role.USER)
+    public ResponseEntity<Response<GetTransactionResponse>> getListByUser(@RequestParam(defaultValue = "1") int page,
+                                                                          @RequestParam(defaultValue = "5") int limit,
+                                                                          @RequestParam(defaultValue = "createdAt",required = false) String sortBy,
+                                                                          @RequestParam(defaultValue = "asc",required = false) String sortOrder) {
+        try {
+            GetTransactionResponse responses = transactionService.getTransactionListByUser(page, limit, sortBy, sortOrder);
+            return Response.success(responses);
+        } catch (Exception e) {
+            return Response.error(e);
+        }
+    }
 }

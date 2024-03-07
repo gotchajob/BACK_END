@@ -1,5 +1,8 @@
 package com.example.gj.util;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -116,6 +119,11 @@ public class Util {
         }
 
         return code.toString();
+    }
+
+    public static Pageable generatePage(int page, int limit, String sortBy, String sortOrder) {
+        Sort.Direction direction = sortOrder.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
+        return PageRequest.of(page-1, limit, direction, sortBy);
     }
 
 

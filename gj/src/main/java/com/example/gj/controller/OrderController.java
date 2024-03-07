@@ -46,6 +46,20 @@ public class OrderController {
         }
     }
 
+    @GetMapping("/get-by-user")
+    @Secured(Role.USER)
+    public ResponseEntity<Response<GetOrderResponse>> getAOrder(@RequestParam(defaultValue = "1") int page,
+                                                          @RequestParam(defaultValue = "5") int limit,
+                                                          @RequestParam(defaultValue = "createdAt",required = false) String sortBy,
+                                                          @RequestParam(defaultValue = "asc",required = false) String sortOrder) {
+        try {
+            GetOrderResponse response = orderService.getByUser(page, limit, sortBy, sortOrder);
+            return Response.success(response);
+        } catch (Exception e) {
+            return Response.error(e);
+        }
+    }
+
     @PostMapping("/update-status")
     @Secured(Role.ADMIN)
     public ResponseEntity<Response<String>> updateStatus(@RequestBody UpdateStatusRequest request) {
@@ -56,4 +70,7 @@ public class OrderController {
             return Response.error(e);
         }
     }
+
+
+
 }

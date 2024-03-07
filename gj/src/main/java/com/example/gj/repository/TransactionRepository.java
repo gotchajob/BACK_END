@@ -23,4 +23,8 @@ public interface TransactionRepository extends JpaRepository<Transaction, String
     @Query("SELECT SUM(t.cost) FROM Transaction t WHERE t.status = 1")
     long sumCost();
 
+    List<Transaction> getAllByStatusAndEmail(int status, String email, Pageable pageable);
+
+    long countByStatusAndEmail(int status, String email);
+
 }

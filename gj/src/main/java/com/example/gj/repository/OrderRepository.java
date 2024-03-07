@@ -22,4 +22,9 @@ public interface OrderRepository extends JpaRepository<Order, String> {
     long countByCreatedAtBefore(Date date);
 
     Order getOrderByCodeAndStatus(String code, int status);
+
+    List<Order> getAllByStatusInAndEmail(List<Integer> status,String email, Pageable pageable);
+    int countByStatusInAndEmail(List<Integer> status, String email);
+
+
 }

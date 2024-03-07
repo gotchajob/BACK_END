@@ -19,6 +19,7 @@ public class TransactionResponse {
     private String paymentName;
     private long total;
     private Date createdAt;
+    private String orderId;
 
     public TransactionResponse(Transaction transaction) {
         if (transaction != null) {
@@ -30,6 +31,7 @@ public class TransactionResponse {
             this.paymentName = transaction.getPayment().getName();
             this.total = transaction.getCost();
             this.createdAt = transaction.getCreatedAt();
+            this.orderId = transaction.getOrderId();
         }
     }
 }

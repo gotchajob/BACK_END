@@ -46,6 +46,7 @@ public class OrderService {
         }
 
         Order order =  orderRepository.save(new Order(request, code));
+        //TODO: create notify
 
         emailService.sendMailOrderService(request.getName(), request.getPhone(), request.getEmail(), code);
 
@@ -73,7 +74,7 @@ public class OrderService {
     public GetOrderResponse get(int page, int limit, String sortBy, String sortOrder) {
         Sort.Direction direction = sortOrder.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
         Pageable pageable = PageRequest.of(page-1, limit, direction, sortBy);
-        List<Integer> statusList = Arrays.asList(1,2,3);
+        List<Integer> statusList = Arrays.asList(1,2);
 
         List<Order> orders = orderRepository.getAllByStatusIn(statusList, pageable);
         int total = orderRepository.countByStatusIn(statusList);
@@ -82,7 +83,7 @@ public class OrderService {
     }
 
     public boolean updateStatus(String id, int status) throws Exception {
-        if (id == null || status < 0 || status > 3) {
+        if (id == null || status < 0 || status > 2) {
             throw new Exception(Message.INVALID_INPUT);
         }
 
@@ -106,17 +107,10 @@ public class OrderService {
                 throw new Exception("old status is not 1");
             }
             order.setProcessingBy(userName);
-        }
-
-        if (status == 3) {
-            if (order.getStatus() != 2) {
-                throw new Exception("status is not processing");
-            }
-            if (!order.getProcessingBy().equals(userName)) {
-                throw new Exception("User is not allow to finish order!");
-            }
-
             transactionService.createTransaction(order);
+
+            //todo: create notify
+            //todo: create booking
         }
 
         order.setStatus(status);
@@ -137,5 +131,17 @@ public class OrderService {
     }
     public long totalOrderBefore(Date endDate) {
         return orderRepository.countByCreatedAtBefore(endDate);
+    }
+
+
+    public GetOrderResponse getByUser(int page, int limit, String sortBy, String sortOrder) {
+        String currentEmail = userService.getCurrentUsername();
+        Pageable pageable = Util.generatePage(page, limit, sortBy, sortOrder);
+        List<Integer> statusList = Arrays.asList(1,2);
+
+        List<Order> orders = orderRepository.getAllByStatusInAndEmail(statusList,currentEmail, pageable);
+        int total = orderRepository.countByStatusInAndEmail(statusList, currentEmail);
+
+        return new GetOrderResponse(orders, total);
     }
 }

@@ -26,6 +26,7 @@ public class Transaction {
     private Date createdAt;
     private Date updatedAt;
     private String userId;
+    private String orderId;
 
     @ManyToOne
     @JoinColumn(name = "payment_id", referencedColumnName = "id")
