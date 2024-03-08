@@ -10,8 +10,8 @@ import java.util.List;
 
 @Service
 public class EmailService {
-    //final static String ADMIN_EMAIL = "gotchajob.vn@gmail.com";
-    final static String ADMIN_EMAIL = "vchi1201@gmail.com";
+    final static String ADMIN_EMAIL = "gotchajob.vn@gmail.com";
+//    final static String ADMIN_EMAIL = "vchi1201@gmail.com";
     final static String DEV_EMAIL = "gotchajob.dev@gmail.com";
 
     private final JavaMailSender mailSender;
