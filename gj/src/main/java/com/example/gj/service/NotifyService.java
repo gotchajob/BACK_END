@@ -22,14 +22,14 @@ public class NotifyService {
     }
 
     public GetNotifyResponse getByUser(int page, int limit, String sortBy, String orderBy) {
-        String currentUserId = userService.getCurrentUserId();
+        String currentEmail = userService.getCurrentUsername();
         Pageable pageable = Util.generatePage(page, limit, sortBy, orderBy);
 
-        List<Notify> notifyList = notifyRepository.getAllByEmailAndStatus(currentUserId, Status.ACTIVE, pageable);
+        List<Notify> notifyList = notifyRepository.getAllByEmailAndStatus(currentEmail, Status.ACTIVE, pageable);
         if (notifyList == null) {
             notifyList = Collections.EMPTY_LIST;
         }
-        long total = notifyRepository.countByEmailAndStatus(currentUserId, Status.ACTIVE);
+        long total = notifyRepository.countByEmailAndStatus(currentEmail, Status.ACTIVE);
 
         return new GetNotifyResponse(notifyList, total);
     }

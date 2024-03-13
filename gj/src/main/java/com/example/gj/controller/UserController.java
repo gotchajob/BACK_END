@@ -96,7 +96,7 @@ public class UserController {
     }
 
     @PostMapping("/create-forget-password")
-    public ResponseEntity<Response<String>> createVerifyPassword(@RequestBody CreateForgetPasswordRequest request) {
+    public ResponseEntity<Response<CreateForgetPasswordResponse>> createVerifyPassword(@RequestBody CreateForgetPasswordRequest request) {
         try {
             verifyService.createForgetPassword(request.getEmail());
 

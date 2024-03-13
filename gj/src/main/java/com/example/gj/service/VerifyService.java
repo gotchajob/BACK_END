@@ -8,6 +8,7 @@ import com.example.gj.repository.VerifyRepository;
 import com.example.gj.util.Util;
 import com.example.gj.validator.EmailValidator;
 import com.example.gj.validator.PasswordValidator;
+import com.example.gj.viewmodel.user.CreateForgetPasswordResponse;
 import com.example.gj.viewmodel.user.VerifyForgetPasswordRequest;
 import com.example.gj.viewmodel.user.VerifyResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -99,7 +100,7 @@ public class VerifyService {
         userRepository.save(user);
     }
 
-    public boolean createForgetPassword(String email) throws Exception {
+    public CreateForgetPasswordResponse createForgetPassword(String email) throws Exception {
         User user = checkUser(email);
 
         String code = Util.generateRandomNumberString(CODE_LENGTH);
@@ -111,7 +112,7 @@ public class VerifyService {
         String fullName = user.getFirstName() + " " + user.getLastName();
         emailService.sendEmailResetPassword(email, code, fullName);
 
-        return true;
+        return new CreateForgetPasswordResponse(code);
     }
 
     public boolean checkCodeForgetPassword(String email, String code) throws Exception {
