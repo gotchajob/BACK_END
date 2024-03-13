@@ -33,6 +33,7 @@ public class OrderController {
     }
 
     @GetMapping("")
+    @Secured(Role.ADMIN)
     public ResponseEntity<Response<GetOrderResponse>> get(@RequestParam(defaultValue = "1") int page,
                                                 @RequestParam(defaultValue = "5") int limit,
                                                 @RequestParam(defaultValue = "createdAt",required = false) String sortBy,
